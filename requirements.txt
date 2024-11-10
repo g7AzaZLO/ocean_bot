@@ -1,0 +1,4 @@
+requests==2.32.3
+aiosqlite==0.20.0
+aiogram==3.14.0
+python-dotenv==1.0.1
