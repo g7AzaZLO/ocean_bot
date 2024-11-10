@@ -25,16 +25,15 @@ async def start_command(message: types.Message):
     user_id = message.from_user.id
     logger.info(f"Пользователь {user_id} вызвал команду /start")
 
-    # Проверка на наличие пользователя в базе данных
     current_ips = await get_user_ips(user_id)
     if current_ips:
+        formatted_ips = "\n".join(current_ips.split(","))
         logger.info(f"Пользователь {user_id} уже имеет сохраненные IP-адреса: {current_ips}")
-        await message.reply(f"Ваши текущие IP-адреса для отслеживания:\n{current_ips}\n\n"
+        await message.reply(f"Ваши текущие IP-адреса для отслеживания:\n{formatted_ips}\n\n"
                             "Если хотите изменить список, введите команду /ip.")
     else:
         logger.info(f"У пользователя {user_id} нет сохраненных IP-адресов")
         await message.reply("Привет! Введите IP-адреса серверов, которые хотите отслеживать, через запятую:")
-
 # Обработчик ввода IP-адресов
 @standard_handler_router.message(lambda message: message.text and "," in message.text)
 async def handle_ip_input(message: types.Message):
