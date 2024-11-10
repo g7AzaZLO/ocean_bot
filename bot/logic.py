@@ -30,7 +30,7 @@ async def start_command(message: types.Message):
         formatted_ips = "\n".join(current_ips.split(","))
         logger.info(f"Пользователь {user_id} уже имеет сохраненные IP-адреса: {current_ips}")
         await message.reply(f"Ваши текущие IP-адреса для отслеживания:\n{formatted_ips}\n\n"
-                            "Если хотите изменить список, введите команду /ip.\n"
+                            "Если хотите изменить список, введите команду /ip.\n\n"
                             "Используйте /check для проверки своих серверов.")
     else:
         logger.info(f"У пользователя {user_id} нет сохраненных IP-адресов")
