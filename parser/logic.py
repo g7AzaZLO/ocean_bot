@@ -1,6 +1,6 @@
 import requests
 import logging
-from config.settings import API_URL
+from config.settings import API_URL, API_URL_SMALL
 from datetime import datetime, timedelta, timezone
 
 # Настройка логирования
@@ -45,7 +45,7 @@ async def parse_node(ip: str) -> dict | None:
     """
     url = f"{API_URL}{ip}"
     try:
-        response = requests.get(url, timeout=10)  # Устанавливаем тайм-аут
+        response = requests.get(url, timeout=100)  # Устанавливаем тайм-аут
         response.raise_for_status()
     except requests.RequestException as e:
         logger.error(f"Ошибка при запросе к API для IP {ip}: {e}")
@@ -79,5 +79,23 @@ async def parse_node(ip: str) -> dict | None:
         "percent_eligible": percent_eligible,
         "nodes_with_90_percent_uptime": nodes_with_90_percent_uptime,
         "average_uptime": average_uptime,
+    }
+    return info
+
+async def parse_total_nodes() -> dict | None:
+    try:
+        response = requests.get(API_URL_SMALL, timeout=100)  # Устанавливаем тайм-аут
+        response.raise_for_status()
+    except requests.RequestException as e:
+        logger.error(f"Ошибка при запросе к API для IP {API_URL_SMALL}: {e}")
+        return None
+    data = response.json()
+    total_eligible_nodes = data["totalEligibleNodes"]
+    total_nodes = data["pagination"]["totalItems"]
+    percent_eligible_nodes = total_eligible_nodes / total_nodes * 100
+    info = {
+        "total_eligible_nodes": total_eligible_nodes,
+        "total_nodes": total_nodes,
+        "percent_eligible_nodes": percent_eligible_nodes,
     }
     return info

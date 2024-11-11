@@ -2,7 +2,7 @@ import logging
 from aiogram import Router, types
 from aiogram.filters import CommandStart, Command
 from bot.db import get_user_ips, update_user_ips
-from parser.logic import parse_node
+from parser.logic import parse_node, parse_total_nodes
 
 # Настройка логирования
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(filename)s - %(message)s')
@@ -139,3 +139,27 @@ async def check_command(message: types.Message):
         logger.info(f"Итоговая статистика для пользователя {user_id}: {results[-1]}")
 
     await message.reply("\n".join(results))
+
+@standard_handler_router.message(Command("check_total"))
+async def check_command(message: types.Message):
+    """
+    Обработчик команды /check_total для получения сведений о всей информации сети.
+    Делает запрос к `parse_total_info` и отображает полученные данные.
+
+    Args:
+        message (types.Message): Сообщение, вызвавшее команду.
+    """
+    logger.info(f"Пользователь {message.from_user.id} вызвал команду /check_total")
+    info = await parse_total_nodes()
+    if info:
+        results = [
+            f"Статистика всей сети:\n"
+            f"  Всего нод: {info['total_nodes']}\n"
+            f"  Eligible: {info['total_eligible_nodes']}\n"
+            f"  Процент Eligible: {info['percent_eligible_nodes']:.2f}%\n"
+        ]
+    else:
+        results = f"Не удалось получить данные."
+        logger.warning(f"Не удалось получить данные по всей сети")
+    await message.reply("\n".join(results))
+

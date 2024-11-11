@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 load_dotenv(os.path.join(os.path.dirname(__file__), '.env'))
 
 API_URL = "https://incentive-backend.oceanprotocol.com/nodes?page=1&size=1000&search="
+API_URL_SMALL = "https://incentive-backend.oceanprotocol.com/nodes?page=1&size=10"
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 
 # Проверка загрузки токена
