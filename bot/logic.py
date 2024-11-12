@@ -110,7 +110,8 @@ async def check_command(message: types.Message):
                 f"  Eligible: {info['eligible_nodes']}\n"
                 f"  Процент Eligible: {info['percent_eligible']:.2f}%\n"
                 f"  Нод с 90%+ аптаймом: {info['nodes_with_90_percent_uptime']}\n"
-                f"  Средний аптайм: {info['average_uptime']:.2f}%"
+                f"  Средний аптайм: {info['average_uptime']:.2f}%\n"
+                f"  Время последней проверки: {info['last_check_time']}\n"
                 f"\n"
             )
             logger.info(f"Проверка сервера {ip}: {info}")
