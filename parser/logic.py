@@ -32,7 +32,6 @@ def calculate_weekly_uptime_percent(uptime_seconds: float, last_check_timestamp:
     uptime_percent = (uptime_seconds / total_seconds_since_thursday) * 100 if total_seconds_since_thursday > 0 else 0
     return min(uptime_percent, 100)
 
-
 async def parse_node(ip: str) -> dict | None:
     """
     Получает данные ноды по IP-адресу из API, рассчитывает аптайм и возвращает сводную информацию.
@@ -65,7 +64,7 @@ async def parse_node(ip: str) -> dict | None:
         uptime_seconds = node['_source'].get('uptime', 0)
         last_check = node['_source'].get('lastCheck', 0)
         if last_check:
-            last_check_time = datetime.fromtimestamp(last_check / 1000, tz=timezone.utc)
+            last_check_time = datetime.fromtimestamp(last_check / 1000, tz=timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
         weekly_uptime_percent = calculate_weekly_uptime_percent(uptime_seconds, last_check)
         total_uptime_percent += weekly_uptime_percent
         logger.debug(f"Нода {node['_source'].get('id')} имеет аптайм {weekly_uptime_percent:.2f}% за последнюю неделю")
@@ -82,7 +81,7 @@ async def parse_node(ip: str) -> dict | None:
         "percent_eligible": percent_eligible,
         "nodes_with_90_percent_uptime": nodes_with_90_percent_uptime,
         "average_uptime": average_uptime,
-        "last_check_time": last_check_time.isoformat() if last_check_time else None  # Добавляем время последней проверки
+        "last_check_time": last_check_time  # Форматируем время последней проверки
     }
     return info
 
@@ -103,12 +102,15 @@ async def parse_total_nodes() -> dict | None:
     total_eligible_nodes = data["totalEligibleNodes"]
     total_nodes = data["pagination"]["totalItems"]
     percent_eligible_nodes = total_eligible_nodes / total_nodes * 100
-    last_check_time = datetime.fromtimestamp(data["lastCheck"] / 1000, tz=timezone.utc) if "lastCheck" in data else None
+    last_check_time = (
+        datetime.fromtimestamp(data["lastCheck"] / 1000, tz=timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
+        if "lastCheck" in data else None
+    )
 
     info = {
         "total_eligible_nodes": total_eligible_nodes,
         "total_nodes": total_nodes,
         "percent_eligible_nodes": percent_eligible_nodes,
-        "last_check_time": last_check_time.isoformat() if last_check_time else None  # Время последней проверки для всех нод
+        "last_check_time": last_check_time  # Форматируем время последней проверки для всех нод
     }
     return info
