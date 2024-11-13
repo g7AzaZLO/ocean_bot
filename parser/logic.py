@@ -30,7 +30,7 @@ def calculate_weekly_uptime_percent(uptime_seconds: float, last_check_timestamp:
     )
     total_seconds_since_thursday = (last_check_datetime - last_thursday).total_seconds()
     uptime_percent = (uptime_seconds / total_seconds_since_thursday) * 100 if total_seconds_since_thursday > 0 else 0
-    return min(uptime_percent, 100)
+    return uptime_percent
 
 async def parse_node(ip: str) -> dict | None:
     """
