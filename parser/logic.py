@@ -51,10 +51,13 @@ async def parse_node(ip: str) -> dict | None:
         return None
 
     data = response.json()
-
-    all_nums = data["pagination"]["totalItems"]
-    eligible_nodes = data["totalEligibleNodes"]
-    percent_eligible = (eligible_nodes / all_nums) * 100
+    try:
+        all_nums = data["pagination"]["totalItems"]
+        eligible_nodes = data["totalEligibleNodes"]
+        percent_eligible = (eligible_nodes / all_nums) * 100
+    except ZeroDivisionError as e:
+        logger.error(f"Ошибка при расчете процента eligible нод для IP {ip}: {e}")
+        return None
 
     total_uptime_percent = 0
     nodes_with_90_percent_uptime = 0
