@@ -120,7 +120,7 @@ async def check_command(message: types.Message):
             total_nodes_with_90_uptime += info["nodes_with_90_percent_uptime"]
             total_average_uptime += info["average_uptime"] * info["all_nums"]  # для взвешенного среднего
         else:
-            results.append(f"Сервер {ip}: не удалось получить данные.")
+            results.append(f"Сервер {ip}: не удалось получить данные.\n\n")
             logger.warning(f"Не удалось получить данные для сервера {ip}")
 
     if total_nodes > 0:
